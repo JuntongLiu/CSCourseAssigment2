@@ -141,22 +141,37 @@ namespace LoopString
         // and print it out.  And pick up the 3rd sub-string and print it out
         public static void PickUtThirdWord()
         {
-            Char dilimeter = 'd';
-            Console.WriteLine("Please type in some string.");
-            String userString = Console.ReadLine();
-            Console.WriteLine("You have typed in: " + userString);
-            Console.WriteLine("System will divide your string into word, using the d as dilimiter");
-            String[] subString = userString.Split(dilimeter);
-
-            // Print out the words splited after the loop
-            foreach(string st in subString)
+            Char dilimeter = ' ';
+            while (true)
             {
-                Console.WriteLine(st);
-            }
-            Console.WriteLine(" ");
-            Console.WriteLine("The Third Word or \"Sub-String\" is: ");
-            Console.WriteLine(subString[2]);
+                Console.WriteLine("Please type in some string.");
+                String userString = Console.ReadLine();
+                Console.WriteLine("You have typed in: " + userString);
+                Console.WriteLine("System will divide your string into word, using the d as dilimiter");
+                String[] subString = userString.Split(dilimeter);
 
+                // Print out the words splited after the loop
+                foreach (string st in subString)
+                {
+                    Console.WriteLine(st);
+                }
+                Console.WriteLine(" ");
+                Console.WriteLine("The Third Word or \"Sub-String\" is: ");
+                try
+                {
+                    Console.WriteLine(subString[2]);
+                    break;
+                }
+                catch (System.IndexOutOfRangeException)
+                {
+                    Console.WriteLine("The string you typed in must contain more than 3 words. Your input is less than 3 words. Try again!");
+                    continue;
+                }
+                catch (System.IO.IOException)
+                {
+                    Console.WriteLine("The string you typed in must contain more than 3 words. Your input is less than 3 words. Try again!");
+                }
+            }
         }
 
     }
