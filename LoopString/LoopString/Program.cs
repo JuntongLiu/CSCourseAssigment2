@@ -8,17 +8,16 @@ namespace LoopString
 {
     class Program
     {
-        private static int readFromUser;
-
+        
         static void Main(string[] args)
         {
-
             // Print out the prompt
             PrintPrompt();
 
             bool StopFlag = false;   // To decide if we should stop the program
-      
-            // we continue until your tell us to stop
+            int readFromUser;
+
+            // we continue until user tell us to stop
             while (!StopFlag)
             {
                try
@@ -68,17 +67,17 @@ namespace LoopString
         }
 
         // Print out main menu and prompt user to make choice
-        private static void PrintPrompt()
+        public static void PrintPrompt()
         {
             // Out put some text to tell user how to use this progrom.
-            Console.WriteLine(" ");
+            Console.WriteLine("\n");
             Console.WriteLine("============================== Start ============================================");
             Console.WriteLine("Please choose what to do:");
             Console.WriteLine("Type \"1\" to check how much you should pay.");
-            Console.WriteLine("Type \"2\" System will repeat your input 10 times");
-            Console.WriteLine("Type \"3\" and type in some word, program will parse and pick out the third word");
+            Console.WriteLine("Type \"2\" and then type in comment, system will cat your comment 10 times to form a long string");
+            Console.WriteLine("Type \"3\" and type in some word separated with space, program will parse and pick out the third word");
             Console.WriteLine("Type \"0\" to stop the program.");
-            Console.WriteLine(" ");
+            Console.WriteLine("\n");
         }
         // when this is invoked, we further ask the user to give his/her age,
         // according to the age, we decide how much he/she should pay
@@ -102,7 +101,8 @@ namespace LoopString
                     continue;
                 }
             }
-
+            
+            // According to user's age, we decide how much he/she should pay
             if (usersAge < 20)
             {
                 Console.WriteLine("You are ungdom, for ungdom, price is: 80Kr.");
@@ -116,24 +116,71 @@ namespace LoopString
                 Console.WriteLine("You need to pay the standard prise: 120Kr.");
             }
 
-            //print out the prompt 
-            Program.PrintPrompt();
+            // One round is done, print out the main menu prompt 
+            PrintPrompt();
         }
 
-        // User choose 2, we further prompt user to type in some comment, and we print out users input repeatedly(10 times)
-        public static void RepeatUsersInput()
+        // User string builder to repeat a substring N times to a long string
+        // In C#, once a string created, it can not be changed. The string like the DateTime, when one want to
+        // modify it, the corresponding function will return a new modified string. But with StringBuilder, one
+        // can realize a dynamically changeable string which use the same memory block on the heap allocated for 
+        // the string at the time delare the StringBuilder instance. 
+        // But, if apppend less then 3 or 4 string, StringBuilder is slower. The stringBuilder is faster
+        // when append more times.
+        public static string StringRepeat(/*this*/ string input, int count)
         {
-            Console.WriteLine("You have chosen 2 - Now please type in some comments");
-            string userComments = Console.ReadLine();
-            Console.WriteLine("Your comments is:");
-            // Print users comments 10 times
-            for (int i = 0; i < 10; i++)
+            if (!string.IsNullOrEmpty(input))
             {
-                Console.WriteLine(userComments);
+                StringBuilder builder = new StringBuilder(input.Length * count); 
+                for (int i = 0; i < count; i++)
+                    builder.Append(input);
+                //Console.WriteLine("DBG: In builder: " + builder.ToString());
+                return builder.ToString();
+               
             }
 
-            //Print the prompt
-            Program.PrintPrompt();
+            return string.Empty;
+        }
+
+        // In C#, once a string is created, it can not be changed. The string like the DateTime, when one want to
+        // modify it, the corresponding function will return a new modified string. 
+        // Use string.Concat() and a for loop to repeat to append a string. We create 10 elements string array.
+        // This might be little slower than the above function which use StringBuilder to realize a dynamic string.
+        // 
+        public static string StringRepeatN(string input, int count)
+        {
+            string[] userString = new string[count+1];    
+            userString[0] = input;
+            int i;
+            for (i = 1; i < count; i++)
+            {
+                userString[i] = string.Concat(userString[i - 1], input); // input);  userComment); both work, because is passed by reference to func ?
+                Console.WriteLine("DBG=>:" + userString[i]);
+            }
+            //Console.WriteLine("DBG=>: Concate with for loop result:" + userString[i-1] + "i = " + i);
+            return userString[i-1];
+        }
+
+        // User choose 2, we further prompt user to type in some comment, and then we concatinate users
+        // input 10 times to format a longer string to print it out.
+        public static void RepeatUsersInput()
+        {
+           
+            Console.WriteLine("You have chosen 2 - Now please type in some comments");
+            string userComment;
+            userComment = Console.ReadLine();
+            Console.WriteLine("Your comments is:" + userComment);
+
+            // Print the concatenated user comments. Here we try two differnet ways with two differnt functions.
+
+            string finalString = StringRepeatN(userComment, 10);                // 1.) use Concat() and for loop
+            Console.WriteLine("From string.Concat loop, The string x 10 is:" + finalString);
+
+            string userString10 = StringRepeat(userComment, 10);                // 2.) use StringBuilder to realize dynamic
+            Console.WriteLine("From StringBuilder,      The string x 10 is:" + userString10);
+
+            // This round is finished, we start over again, print the main menu prompt
+            PrintPrompt();
         }
 
         // User chosen 3, we further prompt user to type in a string, 
